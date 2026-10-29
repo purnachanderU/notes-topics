@@ -1,0 +1,33 @@
+For years, my go-to for Linux automation was simple: SSH in and run a series of commands. 
+It felt efficient… until I realized I was fighting a losing battle.
+
+The problem with raw Linux commands / Bash scripts:
+Idempotency – Run the script twice and it often breaks things or creates duplicates. Most commands just execute; they don’t check the current state.
+Error handling – If a command fails halfway, you’re left with a half-configured “zombie” server.
+
+Enter Ansible
+Ansible fixed both problems:
+It is idempotent — it only changes what’s not already in the desired state.
+It stops on failure, so you don’t cascade more damage.
+It’s also agentless and provider-agnostic. Works on bare metal in your basement the same way it works on an EC2 instance. Prefer built-in modules (apt, yum, user, file, etc.) because they’re designed to be idempotent.
+
+The escape hatch:
+command module → safer, no pipes or redirection
+shell module → full Bash power, but you become responsible for idempotency again
+
+The missing piece: Terraform
+Ansible is excellent at configuration (what happens inside the server).
+Terraform is built for orchestration (creating the infrastructure itself).Biggest wins with Terraform:
+Plan before apply — you see exactly what will change
+Multi-cloud support with one syntax
+Built-in dependency management (database before app server, etc.)
+How I use them together
+Terraform → creates the infrastructure (VMs, networks, load balancers)
+Ansible → configures the software on top (Nginx, SSH, application code)
+
+Takeaway
+If you’re still writing long Bash scripts for critical automation, you’re probably creating technical debt.
+
+Use Ansible for reliable, idempotent configuration.
+Use Terraform when you need infrastructure as code.
+What’s your current approach to Linux automation — pure Bash, Ansible, Terraform, or a mix?
