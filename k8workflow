@@ -1,0 +1,39 @@
+Developer
+    │
+    │ git push
+    ▼
+   Git
+    │
+    ▼
+Jenkins / CI
+    │
+    ├── Build
+    ├── Test
+    └── Docker Build
+             │
+             ▼
+       Container Registry
+       ┌───────────────┐
+       │ Artifact Reg. │
+       │ ECR / ACR     │
+       └───────┬───────┘
+               │
+               │ Image
+               ▼
+        Kubernetes Cluster
+               │
+        ┌──────┴───────┐
+        ▼              ▼
+ Control Plane      Worker Node
+                      │
+                      ▼
+                     Pod
+                      │
+                      ▼
+                   Service
+                      │
+                      ▼
+                   Ingress
+                      │
+                      ▼
+                    User
