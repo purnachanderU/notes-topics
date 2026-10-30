@@ -1,0 +1,308 @@
+☸️ Kubernetes (K8s) - Complete Revision Notes
+1. KUBERNETES
+Kubernetes (K8s) is an open-source container orchestration platform used to automate the deployment, scaling, and management of containerized applications. It groups containers that make up an application into logical units for easy management and discovery.
+
+🎯 Why Kubernetes?
+To manage containers at scale.
+
+To automate deployment, scaling, and operations.
+
+To ensure high availability and reliability.
+
+To optimize resource utilization.
+
+To provide portability across environments (cloud, on-prem, hybrid).
+
+⚡ Key Features
+Feature	Description
+1. Automation	Automates deployment, scaling, and management.
+2. Scalability	Easily scale apps up or down based on demand.
+3. Self-Healing	Automatically restarts, replaces or reschedules failed containers.
+4. High Availability	Ensures minimal downtime with replication and failover.
+5. Load Balancing	Distributes traffic across containers.
+6. Service Discovery	Automatically discovers services and endpoints.
+7. Rolling Updates & Rollbacks	Update apps without downtime and rollback easily if needed.
+8. Portability	Run applications anywhere: on-prem, cloud or hybrid.
+💡 Common Use Cases & Benefits
+Use Cases: Deploy/manage microservices, run stateless/stateful apps, handle traffic spikes with auto-scaling, manage multi-environment deployments.
+
+Benefits: Faster/reliable deployments, better resource utilization, improved availability, consistent environments, supports hybrid infra.
+
+2. KUBERNETES ARCHITECTURE
+A Kubernetes cluster consists of a Control Plane (Master Node) and Worker Nodes working together to run containerized applications.
+
+Think: Control Plane thinks, Worker Nodes do the work.
+
+🧠 Control Plane Components
+API Server: Exposes the K8s API. Central point of communication.
+
+etcd: Consistent and highly available key-value store.
+
+Scheduler: Assigns Pods to nodes based on resources & rules.
+
+Controller Manager: Runs controllers to maintain the desired state.
+
+Cloud Controller Manager: Integrates with cloud providers to manage cloud resources.
+
+⚙️ Worker Node Components
+Kubelet: Ensures containers are running in a Pod.
+
+Kube-proxy: Manages network rules and service communication.
+
+Container Runtime: Runs containers (e.g., containerd, Docker).
+
+🏢 Cluster Overview
+Control Plane (Master Node) manages the cluster.
+
+Worker Nodes run the workloads (pods).
+
+3. Core Components
+These components are the main building blocks that make Kubernetes work.
+
+API Server: Frontend for the Kubernetes control plane. Exposes the Kubernetes API and is the central point of all communication.
+
+etcd: Consistent and highly available key-value store. Stores all cluster data and configuration in a reliable way.
+
+Scheduler: Watches for newly created Pods with no node assigned. Selects the best node for the Pod to run on based on resources and policies.
+
+Controller Manager: Runs controllers to maintain the desired state of the cluster. (e.g., Node Controller, Replication Controller, Endpoint Controller).
+
+Kubelet: Runs on each worker node. Ensures containers are running in a Pod. Communicates with the API Server.
+
+Kube Proxy: Runs on each node. Maintains network rules. Enables network communication to Pods from inside and outside the cluster.
+
+⭐ Together, these components ensure the cluster is healthy, scalable, and self-healing.
+
+4. Pods, ReplicaSet, Deployment & Rolling Updates
+📦 Pods
+The smallest deployable unit in Kubernetes. Represents one or more containers that share the same network, storage, and configuration. Pods are ephemeral.
+
+Pods get their own IP and communicate with other Pods / Services.
+
+🔄 ReplicaSet
+Ensures that a specified number of Pod replicas are running at any given time. If a Pod fails, ReplicaSet creates a new Pod to maintain the desired count.
+
+🚀 Deployment
+Manages ReplicaSets and provides declarative updates for Pods and ReplicaSets. Supports scaling, rolling updates, and rollbacks.
+
+Deployment manages ReplicaSets and ensures desired state of the application.
+
+⏪ Rolling Update & Rollback
+Rolling Update: Updates Pods gradually with zero downtime. New Pods are created first, old Pods are terminated later.
+
+Rollback: Rolls back the Deployment to a previous version if something goes wrong. Restores the old ReplicaSet and Pods.
+
+Key Points:
+
+Pod → smallest unit
+
+ReplicaSet → maintains desired pods
+
+Deployment → manages ReplicaSets, updates, scaling
+
+Rolling Update → zero downtime updates
+
+Rollback → revert to previous stable version
+
+5. SERVICES
+A Service in Kubernetes is a stable network endpoint that exposes a set of Pods as a network service. It provides load balancing, service discovery, and a stable IP/DNS name.
+
+Service Type	Description
+ClusterIP (Default)	Exposes the Service on a cluster-internal IP. Accessible only within the cluster.
+NodePort	Exposes the Service on a static port on each Node's IP. Accessible externally via <NodeIP>:<NodePort> (Port range: 30000-32767).
+LoadBalancer	Exposes the Service externally using a cloud provider's load balancer. Auto-provisions a load balancer and gets a stable external IP.
+Ingress	Provides HTTP/HTTPS routing to Services based on host names or paths. Operates at Layer 7. Needs an Ingress Controller (e.g., NGINX).
+6. NAMESPACES, LABELS, SELECTORS, CONFIGMAP & SECRET
+Namespaces: Provide a way to divide cluster resources between multiple users or projects. Helps in organizing and isolating resources. Default namespaces: default, kube-system, kube-public, kube-node-lease.
+
+Labels: Key-value pairs attached to Kubernetes objects (e.g., app=frontend, env=prod). Used to organize and identify objects easily.
+
+Selectors: Used to filter resources based on labels. Used by Services, ReplicaSets, and Deployments to find matching Pods. (Equality-based or Set-based).
+
+📝 ConfigMap & Secret
+ConfigMap: Stores non-confidential configuration data in key-value pairs. Can be used as environment variables, command-line arguments, or mounted files.
+
+Secret: Stores sensitive data like passwords, tokens, keys, etc. Data is stored in base64 encoded format (not encrypted by default).
+
+YAML Example (ConfigMap):
+
+yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  APP_NAME: my-app
+  LOG_LEVEL: info
+7. Volumes, PV, PVC & StorageClass
+Kubernetes Volumes provide persistent storage for containers. PV, PVC, and StorageClass work together to make storage dynamic, scalable, and manageable.
+
+Volumes: Directories accessible to containers in a Pod. Types: emptyDir, hostPath, configMap, secret, persistentVolume.
+
+Persistent Volume (PV): A piece of storage in the cluster provisioned by an admin or dynamically using StorageClass. It is a cluster resource, independent of any Pod.
+
+Persistent Volume Claim (PVC): A request for storage by a user. Binds to a suitable PV that matches its requirements.
+
+StorageClass: Provides a way to dynamically provision storage. Defines the type of storage (EBS, EFS, etc.) and helps in automatic provisioning of PV.
+
+8. StatefulSet, DaemonSet, Job & CronJob
+StatefulSet: Manages stateful applications. Provides stable, unique network identities and persistent storage. Pods are created in order and deleted in reverse order (e.g., Databases like MySQL, MongoDB).
+
+DaemonSet: Ensures that a copy of a Pod runs on all (or selected) Nodes. Useful for node-level tasks like logging, monitoring, networking.
+
+Job: Creates Pods that run to completion and then stop. Suitable for one-time tasks like batch processing or data migration.
+
+CronJob: Runs Jobs on a schedule (like cron). Useful for recurring tasks like backups, reports, cleanup jobs.
+
+📊 Quick Comparison
+Workload	Purpose	Key Points
+StatefulSet	Stateful applications	Stable identity, ordered, persistent storage
+DaemonSet	Run on all nodes	One Pod per node
+Job	Run once to completion	Terminates after success/failure
+CronJob	Run on a schedule	Creates Jobs based on cron schedule
+9. SCHEDULING
+Scheduling is the process of assigning Pods to Nodes based on resource requirements, policies, and constraints.
+
+Node Selector: Assigns Pods to Nodes with specific labels (spec.nodeSelector: disktype: ssd). Simple way to control placement. Uses exact match.
+
+Affinity: More advanced rules for scheduling.
+
+nodeAffinity (on nodes)
+
+podAffinity (with other Pods)
+
+podAntiAffinity (avoid Pods)
+
+Supports soft (preferred) & hard (required) rules.
+
+Taints: Applied to Nodes to repel Pods. Pods without matching toleration will not be scheduled. Helps reserve Nodes for specific workloads.
+
+Tolerations: Applied to Pods to allow them to be scheduled on tainted Nodes. Must match the taint key, value, and effect.
+
+Taints & Tolerations Together: Taints repel Pods. Tolerations allow Pods. Used together to control where Pods can run.
+
+📊 Quick Comparison
+Concept	Purpose	Applies To
+Node Selector	Simple label-based selection	Pod
+Affinity	Advanced placement rules	Pod
+Taints	Repel Pods from Nodes	Node
+Tolerations	Allow Pods on tainted Nodes	Pod
+💡 Think: Taints control which Pods can run on a Node. Tolerations allow Pods to run on tainted Nodes.
+
+10. SECURITY
+Kubernetes provides multiple security mechanisms to protect your cluster, applications, and data.
+
+RBAC (Role-Based Access Control): Controls who can perform actions on Kubernetes resources. Uses Roles (namespaced) and ClusterRoles (cluster scoped). Bind them to users, groups, or service accounts. Follows the principle of least privilege.
+
+Service Account: Provides an identity for processes running in Pods. Used by Pods to interact with the Kubernetes API. Each namespace has a default Service Account.
+
+Network Policy: Controls the traffic flow to and from Pods. Defines allowed/denied rules based on Pods, namespaces, IP blocks, and ports. Provides isolation between applications.
+
+🛡️ Security Goals
+Authentication: Who are you?
+
+Authorization: What can you do?
+
+Isolation: Keep workloads separated.
+
+Audit & Monitoring: Track & detect issues.
+
+Best Practices: Use RBAC (don't use cluster-admin), create least-privilege ServiceAccounts, restrict network traffic with NetworkPolicies, keep monitoring & auditing enabled.
+
+11. KUBECTL CHEAT SHEET
+💡 Tip: Use kubectl get <resource> -o wide for more details. Add -n <namespace> to run in a specific namespace.
+
+Top 40 Most Used Commands
+#	Command	Purpose
+1	kubectl version	Show client & server version
+2	kubectl cluster-info	Display cluster information
+3	kubectl get nodes	List all nodes
+4	kubectl get nodes -o wide	List nodes with details
+5	kubectl get pods	List pods in current ns
+6	kubectl get pods -A	List pods in all namespaces
+7	kubectl get pods -o wide	List pods with node/IP info
+8	kubectl describe pod <pod>	Show details of a pod
+9	kubectl logs <pod>	Show logs of a pod
+10	kubectl logs -f <pod>	Stream logs of a pod
+11	kubectl exec -it <pod> -- /bin/sh	Open shell in a pod
+12	kubectl get all	List all resources in ns
+13	kubectl get all -A	List all resources in all ns
+14	kubectl get svc	List services
+15	kubectl get svc -o wide	List services with details
+16	kubectl describe svc <svc>	Show details of a service
+17	kubectl get deploy	List deployments
+18	kubectl get deploy -o wide	List deployments with details
+19	kubectl describe deploy <deploy>	Show deployment details
+20	kubectl rollout status deploy/<deploy>	Check rollout status
+21	kubectl rollout history deploy/<deploy>	Show rollout history
+22	kubectl rollout undo deploy/<deploy>	Rollback to previous version
+23	kubectl get rs	List ReplicaSets
+24	kubectl get rs -o wide	List ReplicaSets with details
+25	kubectl get ns	List namespaces
+26	kubectl get cm	List ConfigMaps
+27	kubectl describe cm <cm>	Show ConfigMap details
+28	kubectl get secret	List Secrets
+29	kubectl describe secret <secret>	Show Secret details
+30	kubectl get pv	List PersistentVolumes
+31	kubectl get pvc	List PersistentVolumeClaims
+32	kubectl describe pvc <pvc>	Show PVC details
+33	kubectl get ingress	List Ingresses
+34	kubectl describe ingress <ing>	Show Ingress details
+35	kubectl top nodes	Show node resource usage
+36	kubectl top pods	Show pod resource usage
+37	kubectl apply -f <file.yaml>	Create/Update from YAML
+38	kubectl delete -f <file.yaml>	Delete resources from YAML
+39	kubectl delete pod <pod>	Delete a pod
+40	kubectl drain <node> --ignore-daemonsets	Drain a node for maintenance
+🛠️ Useful Flags
+-n <namespace>: Run command in a namespace
+
+-A: Run command in all namespaces
+
+-o wide: Show more details
+
+-o yaml: Output in YAML format
+
+-o json: Output in JSON format
+
+-w: Watch for changes
+
+-l <label>: Filter by label
+
+--all-namespaces: Same as -A
+
+12. Kubernetes Workflow (End-to-End)
+From Code to Running Application
+
+Developer: Write code and commit (git push).
+
+CI Pipeline: Build, test, and run checks (Jenkins, GitLab CI).
+
+Build Image: Build Docker image and push to registry (docker build & push).
+
+Container Registry: Store image in registry (Docker Hub, ECR, ACR).
+
+Deploy: Apply manifests (kubectl apply -f).
+
+Kubernetes Cluster: Scheduler places Pods on available Nodes (kubectl get pods).
+
+Service Exposure: Expose via Service/Ingress (ClusterIP, NodePort, LoadBalancer).
+
+Monitor & Scale: Monitor logs, metrics, and auto-scale (Prometheus, Grafana).
+
+📋 Common Resources in Flow
+Deployment / StatefulSet: Manage stateless or stateful applications.
+
+Pod: Smallest deployable unit.
+
+Service: Stable networking to access Pods.
+
+ConfigMap / Secret: Non-sensitive and sensitive data.
+
+PersistentVolumeClaim: Claim storage.
+
+Ingress: HTTP/HTTPS routing.
+
+NetworkPolicy: Control traffic.
+
+ServiceAccount & RBAC: Identity and access control.
