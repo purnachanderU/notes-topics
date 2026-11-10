@@ -1,0 +1,106 @@
+I’ve been spending some time looking beyond just writing Terraform code and understanding what actually happens behind the scenes.
+
+One thing that became much clearer to me is how Terraform, state, and configuration management tools like Ansible fit together.
+
+🔹 How Terraform keeps track of infrastructure
+
+Terraform communicates with the cloud provider through the provider plugin.
+
+For example, when we define an EC2 instance, VPC, GKE cluster, or any other resource in our .tf files, Terraform communicates with the provider and creates or manages that resource.
+
+Terraform also maintains a state file to keep track of the infrastructure it manages.
+
+The important point is:
+
+.tf configuration → desired state
+State file → Terraform's record of managed infrastructure
+Provider → actual infrastructure
+
+So, what happens if someone manually deletes a resource from the cloud console?
+
+During the next Terraform operation, Terraform refreshes its knowledge of the infrastructure and detects that the actual infrastructure no longer matches what is defined in the configuration.
+
+Terraform can then determine what needs to be created or changed to bring the infrastructure back to the desired state.
+
+That is one of the things I really like about Infrastructure as Code — the configuration becomes repeatable instead of relying on manual changes.
+
+🔹 Where Ansible comes in
+
+Terraform is excellent at provisioning infrastructure.
+
+But after the server is created, we may still need to:
+
+Install packages
+
+Create users
+
+Configure services
+
+Deploy configuration files
+
+Run application setup
+
+Apply OS-level configuration
+
+This is where Ansible can complement Terraform.
+
+A common approach is:
+
+Terraform → Create infrastructure → Get server information → Ansible → Configure servers
+
+For example, Terraform can create multiple servers and expose their IP addresses through outputs. Those IPs can then be used to generate or provide an Ansible inventory.
+
+Ansible can then take over the configuration management part.
+
+🔹 Data Sources
+
+Another Terraform feature I find very useful is data sources.
+
+Data sources allow Terraform to retrieve information about resources that already exist, without Terraform necessarily managing those resources.
+
+For example, instead of creating a VPC, Terraform can query an existing VPC and use its ID when creating other resources.
+
+This becomes especially useful when working with existing infrastructure.
+
+🔹 Locals
+
+Locals are another small but useful Terraform feature.
+
+They allow us to assign a name to an expression or calculated value and reuse it throughout the configuration.
+
+Unlike variables, locals aren't intended to be overridden through input values.
+
+For example, instead of repeating the same naming expression in multiple places, we can calculate it once in a local and reuse it.
+
+It makes larger Terraform configurations easier to read and maintain.
+
+🔹 Terraform Provisioners
+
+Terraform also provides provisioners such as:
+
+local-exec → runs a command on the machine running Terraform
+
+remote-exec → connects to a remote machine and executes commands
+
+file → copies files to a remote machine
+
+They can be useful for specific tasks after infrastructure creation.
+
+However, I prefer using provisioners carefully and using purpose-built tools like Ansible for configuration management when possible.
+
+🔹 Terraform + Ansible
+
+For me, the biggest takeaway is that Terraform and Ansible don't necessarily compete with each other.
+
+They solve different parts of the infrastructure problem.
+
+Terraform → Infrastructure provisioning
+Ansible → Configuration management
+
+Once these responsibilities are separated, the overall automation becomes much easier to understand and maintain.
+
+These may look like small Terraform concepts — state, data sources, locals, provisioners — but understanding how they work together makes a big difference when working with real infrastructure.
+
+What approach do you use when combining Terraform with Ansible or other configuration management tools?
+
+ 
